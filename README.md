@@ -3,8 +3,11 @@ Download subtitles from subscene
 
 ## Execution
 
-Make it executable by adding the shebang line, which is `#!` + `full/pathway/to/your 
-python/interpreter`. You can get it by typing `which python`
+Make it executable by adding the shebang line, which is `#!` + `full/pathway/to/your python/interpreter`. 
+You can get it by typing `which python`
+
+I use python from anaconda, so in my case , the shebang line is `#!/home/user_name/miniconda3/bin/python`
+
 
 Lastly, put it in a directory on your PATH. 
 
