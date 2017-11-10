@@ -3,14 +3,13 @@
 
 ## Execution
 
-### Linux
 Make the python script executable by adding the shebang line, which is `#!` + `full/pathway/to/your/python/interpreter`. 
 You can get it by typing `which python`
 
 I use python from anaconda, so in my case , the shebang line is `#!/home/user_name/miniconda3/bin/python`
 
-
-Lastly, put it in a directory on your PATH. 
+### Linux
+Put it in a directory on your PATH. 
 
 `cd ~/bin/`  
 `ln -s ~/some/path/to/myscript/arbitraryname`
