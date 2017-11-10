@@ -1,5 +1,5 @@
 # movie_subs
-Download subtitles from subscene
+**Download movie subtitles from subscene**
 
 ## Execution
 
