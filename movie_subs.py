@@ -8,7 +8,7 @@ cwd = os.getcwd()
 #print(cwd)  get the current working directory 
 
 
-movie_name = [s.lower() for s in re.split("[^a-zA-Z]",input("enter the movie name \n"))]
+movie_name = [s.lower() for s in re.split("[^0-9a-zA-Z]",input("enter the movie name \n"))]
 movie_name = list(filter(lambda a: a != '', movie_name))
 m1 = '-'.join(map(str,movie_name))
 #print(m1)
