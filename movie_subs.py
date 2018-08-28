@@ -1,68 +1,63 @@
-#!/home/styx97/miniconda3/bin/python
-
-
 import requests,urllib
 import os,sys,re,zipfile,shutil,io
 from bs4 import BeautifulSoup
 cwd = os.getcwd()
-#print(cwd)  get the current working directory 
 
 
-movie_name = [s.lower() for s in re.split("[^0-9a-zA-Z]",input("enter the movie name \n"))]
+# taking the movie input 
+
+
+movie_name = [s for s in re.split("[^0-9a-zA-Z]",input("enter the movie name : \n"))]
 movie_name = list(filter(lambda a: a != '', movie_name))
-m1 = '-'.join(map(str,movie_name))
-#print(m1)
+m1 = ' '.join(map(str,movie_name))
+
+encodings = []
+while len(encodings) == 0:
+	encodings = [s.lower() for s in re.split("[^0-9a-zA-Z]",input("enter the storage format (eg.720p,bluray,brrip,xvid,hdtv etc) (must) \n"))]
+	if len(encodings) == 0 :
+		print("You must enter some encoding format")
+encodings = list(filter(lambda a: a != '', encodings))
+m2 = ' '.join(map(str,encodings))
+m1 = m1 + ' ' + m2
+
 print("you have searched for \n",m1)
 
 
-r = requests.get("https://subscene.com/subtitles/" + m1 + "/english")
-#print(r.url)
+search_string = m1.split()
+#search_string
+
+
+''' Preparing the query '''
+
+search_url = "https://subscene.com/subtitles/title?q="
+search_url += search_string[0]
+for words in search_string[1:]:
+    search_url += ("+" +  words)
+search_url += "&l="    
+print(search_url)
+
+
+r = requests.get(search_url)
 soup = BeautifulSoup(r.content,"lxml")
-#print(len(soup))
 #print(soup)
 
+subs = soup.find_all("td", class_ = "a1") 
+#print(subs)
 
 
-# case where year is require (eg zero dark thirty)
-if len(soup) == 0 :
-    print("Movie not found in Subscene")
-    print("Enter the year of release")
-    release = input()
-    print("including year of release in search parameters...")
-    m2 = m1 + '-' + release
-    r = requests.get("https://subscene.com/subtitles/" + m2 + "/english")
-    soup = BeautifulSoup(r.content,"lxml")
-    if len(soup) > 0:
-        print("success! :)")
-    else:
-        print("Failed   :(")
-else:
-    print("Success!  :) ")
-    m2 = m1
-atags = soup.find_all('a')
-href= ""
-options_array = []
-#print(atags)
-
-# find all html download tags and put them in options_array
-for i in range(0,len(atags)):
-    spans=atags[i].find_all("span")
-    if(len(spans)==2 and spans[0].get_text().strip()=="English"):
-        #print(spans)
-        href=atags[i].get("href").strip()  
-        if len(options_array) <= 10:
-            options_array.append(href)
-        else: 
-            break 
-#see if the options array is actually filled or not    
-try :
-    choice = options_array[0]  # Set the first link by default
-except IndexError:
-    print("Subtitles found in Subscene") #eta oi memento r case e hobe
-
+for elements in range(len(subs)) :
+    res = subs[elements].find_all("span", class_="l r positive-icon")
+    s = str(res)
+    m = re.search('English',s)
+    if m :
+        target = subs[elements]
+        t = target.find("a")
+        download_link = t['href']
+        break
+        
 
 # download that link
-r1 = requests.get("http://subscene.com" + choice)
+r1 = requests.get("https://subscene.com" + download_link)
 soup = BeautifulSoup(r1.content,"lxml")
 download = soup.find_all('a',attrs={'id':'downloadButton'})[0].get("href")
 #print(download)
@@ -77,3 +72,4 @@ zipped = zipfile.ZipFile(io.BytesIO(f.content))
 zipped.extractall()
 
 print("subtitles downloaded succesfully")
+
